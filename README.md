@@ -5,7 +5,7 @@
 
 ## References
 
-Author's theano code: https://github.com/kelvinxu/arctic-captions 
+Author's theano code: https://github.com/kelvinxu/arctic-captions
 
 Original tensorflow implementation: https://github.com/yunjey/show-attend-and-tell
 
