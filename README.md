@@ -1,15 +1,15 @@
 # Show, Attend and Tell on a django server
 
-![alt text](jpg/attention_over_time.jpg "soft attention")
-
-<br/>
+![Alt text](https://github.com/yunjey/show-attend-and-tell/raw/master/jpg/attention_over_time.jpg "Soft attention")
 
 
 ## References
 
 Author's theano code: https://github.com/kelvinxu/arctic-captions 
 
-Another tensorflow implementation: https://github.com/jazzsaxmafia/show_attend_and_tell.tensorflow
+Original tensorflow implementation: https://github.com/yunjey/show-attend-and-tell
+
+Original django file upload server implementation: https://github.com/sibtc/simple-file-upload
 
 <br/>
 
@@ -19,8 +19,16 @@ Another tensorflow implementation: https://github.com/jazzsaxmafia/show_attend_a
 First, clone this repo.
 
 ```bash
-$ git clone https://github.com/yunjey/show-attend-and-tell-tensorflow.git
-$ git clone https://github.com/tylin/coco-caption.git
+$ git clone https://github.com/yonilx/show-attend-and-tell-django.git
 ```
 
-The project 
+Install all required packages.
+
+Run the django server with:
+
+```bash
+$ python manage.py migrate
+$ python manage.py runserver
+```
+
+The project is able to upload new images and show their result using the soft attention model in "Show, Attend and tell".
