@@ -1,6 +1,14 @@
 from __future__ import unicode_literals
 
+import cPickle as pickle
+import scipy
+import subprocess
+import threading
+from PIL import Image
+
 from django.db import models
+
+lock = threading.Lock()  # resource lock, run only 1 network at a time
 
 
 class ImageFile(models.Model):
@@ -9,27 +17,14 @@ class ImageFile(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        a=12
+        if self.pk is None:  # first time upload, run the network for tagging
+            print "lock status : " + str(lock.locked())  # print lock status
+            self.img.save(self.img.path.split("/")[-1], self.img.file, False)  # saves the image to file
+            with lock:  # critical section, run the network only 1 at a time
+                from showattendtell import test
+                caption, img = test.test_model_on_image(self.img.path)
+                self.description = caption
+
         super(ImageFile, self).save(force_insert, force_update, using, update_fields)
-        pass
-        # from showattendtell import test
-        # test.main()
-        #
-        # if self.pk is not None:  # update
-        #     if not self.isReviewed:  # isReviewed = false
-        #         self.isReviewed = True
-        #
-        # if self.pk is None:  # first time upload, run the network for classification
-        #     self.imagefile.save(self.imagefile.path.split("/")[-1], self.imagefile.file, False)  # saves the image to file
-        #     print "lock status : " + str(lock.locked())  # print lock status
-        #     with lock:  # critical section, run the network only 1 at a time
-        #         network_cls = subprocess.check_output(["th", "/root/fb.resnet.torch/pretrained/classify_top1.lua",
-        #                                                get_active_network_path(),
-        #                                                self.imagefile.path])  # call the network to classify the image
-        #     # network_cls = "7900300100"
-        #     print "classification: "  # write to stdout for debugging
-        #     print "old id: " + str(self.plant_id_id)
-        #     print "new id: " + network_cls
-        #     self.plant_id_id = int(network_cls)  # change plant id to save the network's output
-        #
-        # super(PlantImage, self).save(force_insert, force_update, using, update_fields)
+        im = Image.fromarray(img)  # change file to attention picture
+        im.save(self.img.path)
