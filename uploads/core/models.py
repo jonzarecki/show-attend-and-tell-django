@@ -1,8 +1,5 @@
 from __future__ import unicode_literals
 
-import cPickle as pickle
-import scipy
-import subprocess
 import threading
 from PIL import Image
 

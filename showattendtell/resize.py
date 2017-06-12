@@ -2,6 +2,12 @@ from PIL import Image
 import os
 
 
+def resize_image_test(image):
+    # changes original image !
+    image = image.resize([224, 224])
+    return image
+
+
 def resize_image(image):
     width, height = image.size
     if width > height:

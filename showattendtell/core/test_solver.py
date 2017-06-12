@@ -7,7 +7,7 @@ import skimage.transform
 import tensorflow as tf
 from showattendtell.core.vggnet import Vgg19
 
-from showattendtell.resize import resize_image
+from showattendtell.resize import resize_image_test
 from utils import *
 
 figure_savepath = os.path.join(os.path.dirname(__file__), "caption_figure_images/")
@@ -51,7 +51,7 @@ class CaptioningSolver(object):
                 with tf.Session() as sess:
                     tf.global_variables_initializer().run()
                     image_batch = np.array(
-                        map(lambda x: np.array(resize_image(Image.open(x))), [image_path])).astype(
+                        map(lambda x: np.array(resize_image_test(Image.open(x))), [image_path])).astype(
                         np.float32)
                     return sess.run(vggnet.features, feed_dict={vggnet.images: image_batch})
 
@@ -87,15 +87,16 @@ class CaptioningSolver(object):
                     break
                 plt.subplot(4, 5, t + 2)
                 plt.text(0, 1, '%s(%.2f)' % (words[t], bts[0, t]), color='black', backgroundcolor='white',
-                         fontsize=8)
+                         fontsize=12)
                 plt.imshow(img)
                 alp_curr = alps[0, t, :].reshape(14, 14)
                 alp_img = skimage.transform.pyramid_expand(alp_curr, upscale=16, sigma=20)
-                plt.imshow(alp_img, alpha=0.7)
+                plt.imshow(alp_img, alpha=0.85)
                 plt.axis('off')
 
             # save figure as numpy array
             buf = io.BytesIO()
             plt.savefig(buf, format='png')
             buf.seek(0)
+            plt.gcf().clear()
             return (decoded[0], np.array(Image.open(buf)))
