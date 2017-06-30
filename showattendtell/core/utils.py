@@ -3,6 +3,10 @@ import cPickle as pickle
 import hickle
 import time
 import os
+import tensorflow as tf
+
+config = tf.ConfigProto()
+config.gpu_options.allow_growth=True
 
 
 def load_coco_data(data_path='./data', split='train'):

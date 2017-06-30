@@ -1,7 +1,9 @@
+from distutils.command.config import config
 from scipy import ndimage
 from collections import Counter
 from showattendtell.core.vggnet import Vgg19
 from showattendtell.core.utils import *
+from showattendtell.core import utils
 
 import tensorflow as tf
 import numpy as np
@@ -183,7 +185,7 @@ def main():
     # extract conv5_3 feature vectors
     vggnet = Vgg19(vgg_model_path)
     vggnet.build()
-    with tf.Session() as sess:
+    with tf.Session(config=utils.config) as sess:
         tf.initialize_all_variables().run()
         for split in ['train', 'val', 'test']:
             anno_path = './data/%s/%s.annotations.pkl' % (split, split)

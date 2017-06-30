@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import skimage.transform
 import tensorflow as tf
 from showattendtell.core.vggnet import Vgg19
+from showattendtell.core import utils
+
 
 from showattendtell.resize import resize_image_test
 from utils import *
@@ -47,8 +49,7 @@ class CaptioningSolver(object):
                 vgg_model_path = 'showattendtell/data/imagenet-vgg-verydeep-19.mat'
                 vggnet = Vgg19(vgg_model_path)  # prepare model for feature extraction
                 vggnet.build()
-
-                with tf.Session() as sess:
+                with tf.Session(config=utils.config) as sess:
                     tf.global_variables_initializer().run()
                     image_batch = np.array(
                         map(lambda x: np.array(resize_image_test(Image.open(x))), [image_path])).astype(

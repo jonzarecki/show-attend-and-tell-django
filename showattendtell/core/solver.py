@@ -10,6 +10,7 @@ from bleu import evaluate
 from showattendtell.core.vggnet import Vgg19
 from showattendtell.resize import resize_image
 from utils import *
+from showattendtell.core import utils
 
 figure_savepath = os.path.join(os.path.dirname(__file__), "caption_figure_images/")
 
@@ -107,10 +108,8 @@ class CaptioningSolver(object):
         print "Batch size: %d" % self.batch_size
         print "Iterations per epoch: %d" % n_iters_per_epoch
 
-        config = tf.ConfigProto(allow_soft_placement=True)
-        # config.gpu_options.per_process_gpu_memory_fraction=0.9
-        config.gpu_options.allow_growth = True
-        with tf.Session(config=config) as sess:
+
+        with tf.Session(config=utils.config) as sess:
             tf.global_variables_initializer().run()
             # summary_writer = tf.train.SummaryWriter(self.log_path, graph=tf.get_default_graph())
             summary_writer = tf.summary.FileWriter(self.log_path, graph=tf.get_default_graph())
@@ -200,7 +199,7 @@ class CaptioningSolver(object):
                 vggnet = Vgg19(vgg_model_path)  # prepare model for feature extraction
                 vggnet.build()
 
-                with tf.Session() as sess:
+                with tf.Session(config=utils.config) as sess:
                     tf.global_variables_initializer().run()
                     image_batch = np.array(
                         map(lambda x: np.array(resize_image(Image.open(x))), [image_path])).astype(
